@@ -1,8 +1,10 @@
-from django.shortcuts import render, redirect # type: ignore
+from django.shortcuts import render, redirect  # type: ignore
+
 # Django authentication libraries
-from django.contrib.auth import authenticate, login, logout # type: ignore
+from django.contrib.auth import authenticate, login, logout  # type: ignore
+
 # Django Form for authentication
-from django.contrib.auth.forms import AuthenticationForm # type: ignore
+from django.contrib.auth.forms import AuthenticationForm  # type: ignore
 
 
 def login_view(request):

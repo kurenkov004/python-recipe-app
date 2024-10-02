@@ -4,7 +4,7 @@
 # # Register your models here.
 # admin.site.register(Recipe)
 
-from django.contrib import admin #type:ignore
+from django.contrib import admin  # type:ignore
 from .models import Recipe
 
 

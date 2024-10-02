@@ -1,7 +1,7 @@
 from django.test import TestCase  # type: ignore
 from .models import Recipe
-from django.urls import reverse #type:ignore
-from django.contrib.auth.models import User #type:ignore
+from django.urls import reverse  # type:ignore
+from django.contrib.auth.models import User  # type:ignore
 from .forms import RecipeSearchForm, RecipeForm
 import json
 
@@ -60,11 +60,11 @@ class RecipeModelTest(TestCase):
         # compare values
         self.assertEqual(recipe.calculate_difficulty(), "Easy")
 
-    # ------------------------------MISC TESTS------------------------------#  
+    # ------------------------------MISC TESTS------------------------------#
     def test_default_img_path(self):
         # Verifies that the default path for a recipe's image is correctly set.
         recipe = Recipe.objects.get(id=1)
-        self.assertEqual(recipe.pic, 'no_picture.jpg')
+        self.assertEqual(recipe.pic, "no_picture.jpg")
 
 
 class SearchFormTest(TestCase):
@@ -146,14 +146,15 @@ class RecipeViewsTest(TestCase):
         response = self.client.get(reverse("recipes:detail", args=[self.recipe.pk]))
         self.assertEqual(response.status_code, 200)
 
+
 class RecipeFormTest(TestCase):
 
     def test_recipe_form_valid(self):
-        #provide valid data
+        # provide valid data
         form_data = {
-            'name': 'Test',
-            'ingredients': 'Ing1, ing2, ing3',
-            'cooking_time': 5,
+            "name": "Test",
+            "ingredients": "Ing1, ing2, ing3",
+            "cooking_time": 5,
         }
         form = RecipeForm(data=form_data)
 
@@ -161,32 +162,34 @@ class RecipeFormTest(TestCase):
         self.assertTrue(form.is_valid())
         # Test saving the form and check that it creates a new recipe in the database
         recipe = form.save()
-        self.assertEqual(recipe.name, 'Test')
-        self.assertEqual(recipe.ingredients, 'Ing1, ing2, ing3')
-    
+        self.assertEqual(recipe.name, "Test")
+        self.assertEqual(recipe.ingredients, "Ing1, ing2, ing3")
+
     def test_recipe_form_invalid(self):
         # Missing title (required field)
         form_data = {
-            'ingredients': 'Flour, Sugar',
-            'cooking_time': 5,
+            "ingredients": "Flour, Sugar",
+            "cooking_time": 5,
         }
         form = RecipeForm(data=form_data)
-        
+
         # The form should not be valid because the title is required
         self.assertFalse(form.is_valid())
-        self.assertIn('name', form.errors)  # Check that the 'title' field has an error
+        self.assertIn("name", form.errors)  # Check that the 'title' field has an error
 
     def test_recipe_form_saves_to_db(self):
         form_data = {
-            'name': 'Test',
-            'ingredients': 'Ing1, ing2, ing3',
-            'cooking_time': 5,
+            "name": "Test",
+            "ingredients": "Ing1, ing2, ing3",
+            "cooking_time": 5,
         }
         form = RecipeForm(data=form_data)
-        
+
         self.assertTrue(form.is_valid())  # Ensure the form is valid
-        
+
         # Save the form and check that it creates a new Recipe instance in the database
         recipe = form.save()
-        self.assertEqual(Recipe.objects.count(), 1)  # One recipe should exist in the DB now
-        self.assertEqual(Recipe.objects.get(id=recipe.id).name, 'Test')
+        self.assertEqual(
+            Recipe.objects.count(), 1
+        )  # One recipe should exist in the DB now
+        self.assertEqual(Recipe.objects.get(id=recipe.id).name, "Test")

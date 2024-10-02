@@ -7,16 +7,19 @@ from .utils import (
     get_difficulty_spread_chart,
     get_cooking_time_by_difficulty_chart,
 )
-from django.http import JsonResponse #type:ignore
+from django.http import JsonResponse  # type:ignore
 from django.contrib.auth.mixins import LoginRequiredMixin  # type: ignore
 from .forms import RecipeSearchForm, RecipeForm
 import pandas as pd  # type: ignore
 import json
-from django.views.decorators.http import require_POST, require_http_methods #type:ignore
-from django.contrib.auth.decorators import login_required #type:ignore
+from django.views.decorators.http import (
+    require_POST,
+    require_http_methods,
+)  # type:ignore
+from django.contrib.auth.decorators import login_required  # type:ignore
 from json.decoder import JSONDecodeError
-from django.contrib import messages #type:ignore
-from django.conf import settings #type:ignore
+from django.contrib import messages  # type:ignore
+from django.conf import settings  # type:ignore
 import os
 
 
@@ -117,46 +120,51 @@ class RecipeDetailView(LoginRequiredMixin, DetailView):
 
 @login_required
 def add_recipe(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = RecipeForm(request.POST, request.FILES)
         if form.is_valid():
             # Save the valid form and return a success status
             form.save()
-            return JsonResponse({'status': 'success'})
+            return JsonResponse({"status": "success"})
         else:
             # Return form errors as JSON if form is not valid
-            return JsonResponse({'status': 'error', 'errors': form.errors})
+            return JsonResponse({"status": "error", "errors": form.errors})
     # Handle non-POST methods
-    return JsonResponse({'status': 'invalid_method'})
+    return JsonResponse({"status": "invalid_method"})
 
 
 @login_required
 def update_recipe(request, pk):
-    #retrieve selected recipe
+    # retrieve selected recipe
     recipe = get_object_or_404(Recipe, pk=pk)
-    if request.method == 'POST':
+    if request.method == "POST":
         form = RecipeForm(request.POST, request.FILES, instance=recipe)
 
         if form.is_valid():
             form.save()
 
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({'message': 'Recipe updated successfully!'}, status=200)
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                return JsonResponse(
+                    {"message": "Recipe updated successfully!"}, status=200
+                )
             else:
-                return redirect('recipes:detail', pk=recipe.pk)  # Redirect to a recipe detail view
+                return redirect(
+                    "recipes:detail", pk=recipe.pk
+                )  # Redirect to a recipe detail view
         else:
             # Handle form errors for AJAX requests
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
                 # Send the form errors in JSON format
-                return JsonResponse({'errors': form.errors}, status=400)
+                return JsonResponse({"errors": form.errors}, status=400)
     else:
         # For GET request, pre-populate the form with the existing recipe data
         form = RecipeForm(instance=recipe)
-    
-    # Render the form (for non-AJAX requests or in case of GET request)
-    return render(request, 'recipes/recipe_details.html', {'form': form, 'object': recipe})
 
-    
+    # Render the form (for non-AJAX requests or in case of GET request)
+    return render(
+        request, "recipes/recipe_details.html", {"form": form, "object": recipe}
+    )
+
 
 @login_required
 @require_POST
@@ -164,7 +172,9 @@ def delete_recipe(request, pk):
     try:
         recipe = get_object_or_404(Recipe, pk=pk)
         recipe.delete()
-        return JsonResponse({'status': 'success'})
+        return JsonResponse({"status": "success"})
     except JSONDecodeError:
         # Handle cases where the request body does not contain valid JSON
-        return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
+        return JsonResponse(
+            {"status": "error", "message": "Invalid JSON data"}, status=400
+        )

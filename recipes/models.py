@@ -1,6 +1,6 @@
-from django.db import models #type:ignore
-from django.shortcuts import reverse #type:ignore
-from django.conf import settings #type:ignore
+from django.db import models  # type:ignore
+from django.shortcuts import reverse  # type:ignore
+from django.conf import settings  # type:ignore
 import os
 
 
@@ -45,5 +45,5 @@ class Recipe(models.Model):
         if self.pic and not self.pic.name == "no_picture":
             pic_path = self.pic.path
             if os.path.isfile(pic_path):
-                os.remove(pic_path) #deletes the pic associated with the recipe
-        super().delete(*args, **kwargs) #calls the super class delete method
+                os.remove(pic_path)  # deletes the pic associated with the recipe
+        super().delete(*args, **kwargs)  # calls the super class delete method
